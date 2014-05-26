@@ -10,6 +10,8 @@ Bag of visual words (BOW) representation was based on Bag of words in text proce
 
 Image dataset is stored in folder (of any name) with subfolders named by group names. In the subfolders there are images for current group stored. BOW should generate and store descriptors and histograms into specified output .xml or .yml file (tested only with XML).
 
+![BOW Idea](VizGhar.github.com/BOW/BOWIdea.jpg)
+
 BOW works as follows (compare with Figure 1 and 2):
 * compute visual word vocabulary with k-means algorithm (where k is equivalent with count of visual words in vocabulary). Vocabulary is stored into output file. This should take about 30 minutes on 8 CPU cores when k=500 and image count = 150. OpenMP is used to improve performance.
 * compute group histograms (there are 2 methods implemented for this purpose – median and average histogram, only median is used because of better results). This part requires vocabulary computed. Group histogram is normalized histogram, this means sum of all columns within the histogram equals 1.
@@ -17,7 +19,10 @@ BOW works as follows (compare with Figure 1 and 2):
 
 As seen in Figure 2, whole vocabulary and group histogram computation may be skipped if they were already computed.
 
+![BOW Diagram](VizGhar.github.com/BOW/BOWDiagram.jpg)
+
 For usage simplification I have implemented BOWProperties class as singleton, which holds basic information and settings like BOWDescriptorExtractor, BOWTrainer, reading images as grayscaled images or method for obtaining descriptors (SIFT and SURF are currently implemented and ready to use). Example of implementation is here:
+
 BOWProperties* BOWProperties::setFeatureDetector(const string type, int featuresCount)
 {
 	Ptr<FeatureDetector> featureDetector;
@@ -28,11 +33,13 @@ BOWProperties* BOWProperties::setFeatureDetector(const string type, int features
 	}
 ...
 }
+
 This is how all other properties are set. The only thing that user have to do is simply set properties and run classification.
 
 There is in most cases single DataSet object holding reference to groups and some Group objects that holds references to images in the group in my implementation. Training implementation:
 
 DataSet part:
+
 void DataSet::trainBOW()
 {
 	BOWProperties* properties = BOWProperties::Instance();
