@@ -23,6 +23,7 @@ As seen in Figure 2, whole vocabulary and group histogram computation may be ski
 
 For usage simplification I have implemented BOWProperties class as singleton, which holds basic information and settings like BOWDescriptorExtractor, BOWTrainer, reading images as grayscaled images or method for obtaining descriptors (SIFT and SURF are currently implemented and ready to use). Example of implementation is here:
 
+```c++
 BOWProperties* BOWProperties::setFeatureDetector(const string type, int featuresCount)
 {
 	Ptr<FeatureDetector> featureDetector;
@@ -33,6 +34,7 @@ BOWProperties* BOWProperties::setFeatureDetector(const string type, int features
 	}
 ...
 }
+```
 
 This is how all other properties are set. The only thing that user have to do is simply set properties and run classification.
 
@@ -40,6 +42,7 @@ There is in most cases single DataSet object holding reference to groups and som
 
 DataSet part:
 
+```c++
 void DataSet::trainBOW()
 {
 	BOWProperties* properties = BOWProperties::Instance();
@@ -56,9 +59,11 @@ void DataSet::trainBOW()
 		->getBOWImageDescriptorExtractor()
 		->setVocabulary(vocabulary);
 }
+```
 
 Group part (notice OpenMP usage for parallelization):
 
+```c++
 unsigned Group::trainBOW()
 {
 	unsigned descriptor_count = 0;
@@ -75,9 +80,11 @@ unsigned Group::trainBOW()
 	}
 	return descriptor_count;
 }
+```
 
 This part of code generates and stores vocabulary. The getDescriptors() method returns descriptors for current image via DescriptorExtractor class. Next part shows how the group histograms are computed:
 
+```c++
 void Group::trainGroupClassifier()
 {
 	if (!Utils::readMatrix(properties->getMatrixStorage(), groupClasifier, name))
@@ -87,11 +94,13 @@ void Group::trainGroupClassifier()
 		Utils::saveMatrix(properties->getMatrixStorage(), medianHistogram, name);
 	}
 }
+```
 
 Where getMedianHistogram() method generates median histogram from histograms that are representing each image in current group.
 
 Now the vocabulary and histogram classifiers are computed and stored. Last part is comparing new image with the classifiers. 
 
+```c++
 Group DataSet::getImageClass(Image image)
 {
 	for (int i = 0; i < groups.size(); i++)
@@ -105,5 +114,6 @@ Group DataSet::getImageClass(Image image)
 	}
 	return groups[bestFitPos];
 }
+```
 
 The returned group is group where image most possibly belongs. Nearly every piece of code is little bit simplified but shows basic thoughts. For more detailed code, see sources.
