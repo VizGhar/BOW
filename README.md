@@ -10,7 +10,7 @@ Bag of visual words (BOW) representation was based on Bag of words in text proce
 
 Image dataset is stored in folder (of any name) with subfolders named by group names. In the subfolders there are images for current group stored. BOW should generate and store descriptors and histograms into specified output .xml or .yml file (tested only with XML).
 
-![BOW Idea](VizGhar.github.com/BOW/BOWIdea.jpg)
+![BOW Idea](BOWIdea.jpg)
 
 BOW works as follows (compare with Figure 1 and 2):
 * compute visual word vocabulary with k-means algorithm (where k is equivalent with count of visual words in vocabulary). Vocabulary is stored into output file. This should take about 30 minutes on 8 CPU cores when k=500 and image count = 150. OpenMP is used to improve performance.
@@ -19,7 +19,7 @@ BOW works as follows (compare with Figure 1 and 2):
 
 As seen in Figure 2, whole vocabulary and group histogram computation may be skipped if they were already computed.
 
-![BOW Diagram](VizGhar.github.com/BOW/BOWDiagram.jpg)
+![BOW Diagram](BOWDiagram.jpg)
 
 For usage simplification I have implemented BOWProperties class as singleton, which holds basic information and settings like BOWDescriptorExtractor, BOWTrainer, reading images as grayscaled images or method for obtaining descriptors (SIFT and SURF are currently implemented and ready to use). Example of implementation is here:
 
